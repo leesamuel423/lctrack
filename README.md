@@ -18,7 +18,8 @@ cd lcTrack
 
 3. Run application
 ```bash
-./gradlew bootRun
+./gradlew bootRun --args='--spring.profiles.active=dev' # Run in development mode
+./gradlew bootRun --args='--spring.profiles.active=prod' # Run in production mode
 ```
 
 4. Run Tests
