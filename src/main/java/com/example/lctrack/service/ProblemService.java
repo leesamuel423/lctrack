@@ -8,23 +8,32 @@ import java.util.List;
 
 @Service
 public class ProblemService {
-    @Autowired
-    private ProblemRepository problemRepository;
+  @Autowired
+  private ProblemRepository problemRepository;
 
-    public List<Problem> getAllProblems() {
-        return problemRepository.findAll();
-    }
+  public ProblemService(ProblemRepository problemRepository) {
+      this.problemRepository = problemRepository;
+  }
 
-    public Problem getProblemById(String id) {
-        return problemRepository.findById(id).orElse(null);
-    }
+  public List<Problem> getAllProblems() {
+    return problemRepository.findAll();
+  }
 
-    public Problem saveProblem(Problem problem) {
-        return problemRepository.save(problem);
+  public Problem getProblemById(String id) {
+    try{
+      Integer intId = Integer.parseInt(id);
+      return problemRepository.findById(intId).orElse(null);
+    } catch (NumberFormatException e) {
+      return null;
     }
+  }
 
-    // Method to bulk save all Leetcode problems
-    public void saveAllProblems(List<Problem> problems) {
-        problemRepository.saveAll(problems);
-    }
+  public Problem saveProblem(Problem problem) {
+    return problemRepository.save(problem);
+  }
+
+  // Method to bulk save all Leetcode problems
+  public void saveAllProblems(List<Problem> problems) {
+    problemRepository.saveAll(problems);
+  }
 }

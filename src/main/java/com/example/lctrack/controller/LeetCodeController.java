@@ -2,10 +2,10 @@ package com.example.lctrack.controller;
 
 import com.example.lctrack.service.LeetCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/leetcode")
@@ -19,8 +19,9 @@ public class LeetCodeController {
   }
 
   @PostMapping("/fetch")
-  public ResponseEntity<String> fetchProblems() {
-    leetCodeService.fetchAndSaveProblems().subscribe();
-    return ResponseEntity.ok("Fetch operation started");
+  public Mono<String> fetchProblems() {
+    return leetCodeService.fetchAndSaveProblems()
+    .thenReturn("Problems fetched and saved successfully")
+    .onErrorReturn("Error fetching problems");
   }
 }
