@@ -2,6 +2,10 @@ package com.example.lctrack.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 import java.util.List;
 
 /**
@@ -12,10 +16,20 @@ public class User {
 
   @Id
   private String id;
+
+  @NotBlank(message = "Username is required")
+  @Size(min = 8, max = 20)
   private String username;
+
+  @NotBlank(message = "Password is required")
+  @Size(min = 8, message = "Password must be at least 8 characters")
   private String password;
+
+  @Email(message = "Email should be valid")
   private String email;
+
   private String phoneNumber;
+
   private List<UserProblemProgress> problemsList; // User's progress on problems
 
   // Constructors
