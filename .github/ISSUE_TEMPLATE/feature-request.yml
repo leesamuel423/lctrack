@@ -1,4 +1,5 @@
 name: Feature request
+description: Request a new feature!
 title: "Feature request: <short description>"
 labels: ["request: feature"]
 body:
