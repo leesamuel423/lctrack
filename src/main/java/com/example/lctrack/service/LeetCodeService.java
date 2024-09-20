@@ -23,6 +23,7 @@ public class LeetCodeService {
 
   @Autowired
   public LeetCodeService(ProblemRepository problemRepository) {
+    // Init webclient w/ base URL and headers
     this.webClient = WebClient.builder()
     .baseUrl("https://leetcode.com")
     .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -31,8 +32,11 @@ public class LeetCodeService {
     this.problemRepository = problemRepository;
   }
 
+  // Main method to fetch and save problems
   public Mono<Void> fetchAndSaveProblems() {
+    // Get highest problem ID from database
     int highestId = getHighestProblemId();
+    // Fetch problems starting from highestId, then save new ones
     return fetchProblems(highestId)
     .flatMap(this::saveNewProblems)
     .onErrorResume(e -> {
@@ -41,18 +45,22 @@ public class LeetCodeService {
     });
   }
 
+  // Helper method to get highest problem ID from db
   private int getHighestProblemId() {
     Problem highestProblem = problemRepository.findFirstByOrderByIdDesc();
     return highestProblem != null ? highestProblem.getId() : 0;
   }
 
+  // Method to fetch problems from LeetCode graphql API
   private Mono<Map<String, Object>> fetchProblems(int skip) {
+    // GraphQL query string
     String query = "query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {" +
     "problemsetQuestionList: questionList(categorySlug: $categorySlug, limit: $limit, skip: $skip, filters: $filters) {" +
     "total: totalNum questions: data {" +
     "frontendQuestionId: questionFrontendId title difficulty" +
     "}}}\n";
 
+    // Variables for query
     Map<String, Object> variables = Map.of(
       "categorySlug", "",
       "skip", skip,
@@ -60,11 +68,13 @@ public class LeetCodeService {
       "filters", Map.of()
     );
 
+    // Request body combining query and variables
     Map<String, Object> requestBody = Map.of(
       "query", query,
       "variables", variables
     );
 
+    // Make POST request to API
     return webClient.post()
     .uri("/graphql")
     .bodyValue(requestBody)
@@ -72,27 +82,32 @@ public class LeetCodeService {
     .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>(){});
   }
 
+  // Method to save new problems to db
   private Mono<Void> saveNewProblems(Map<String, Object> response) {
+    // Extract data from response
     Map<String, Object> data = (Map<String, Object>) response.get("data");
     Map<String, Object> problemsetQuestionList = (Map<String, Object>) data.get("problemsetQuestionList");
     List<Map<String, Object>> questions = (List<Map<String, Object>>) problemsetQuestionList.get("questions");
 
+    // Iterate through questions and save new ones 
     for (Map<String, Object> questionData : questions) {
       int id = Integer.parseInt((String) questionData.get("frontendQuestionId"));
       if (!problemRepository.existsById(id)) {
+        // Create and save a new Problem entity
         Problem problem = new Problem();
         problem.setId(id);
         problem.setName((String) questionData.get("title"));
         problem.setDifficulty(Difficulty.valueOf(((String) questionData.get("difficulty")).toUpperCase()));
         problemRepository.save(problem);
-        System.out.println("Saved new problem: " + problem.getName());
+        System.out.println("Saved new problem: " + problem.getId() + ". " + problem.getName());
       }
     }
 
     return Mono.empty();
   }
 
-  @Scheduled(cron = "0 0 0 * * SUN") // Run at midnight every Sunday
+  // Scheduled method to run fetchAndSaveProblems every Sunday at midnight
+  @Scheduled(cron = "0 0 0 * * SUN")
   public void scheduledFetchAndSaveProblems() {
     fetchAndSaveProblems().subscribe();
   }

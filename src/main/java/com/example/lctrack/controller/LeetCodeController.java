@@ -18,8 +18,10 @@ public class LeetCodeController {
     this.leetCodeService = leetCodeService;
   }
 
+  // Endpoint to fetch problems, mapped to POST /api/leetcode/fetch
   @PostMapping("/fetch")
   public Mono<String> fetchProblems() {
+    // Call service method to fetch and save problems
     return leetCodeService.fetchAndSaveProblems()
     .thenReturn("Problems fetched and saved successfully")
     .onErrorReturn("Error fetching problems");

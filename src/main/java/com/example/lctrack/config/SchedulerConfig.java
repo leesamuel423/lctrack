@@ -7,3 +7,5 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class SchedulerConfig {
 }
+
+// Can leave empty class -> sufficient to enable scheduling

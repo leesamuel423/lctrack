@@ -15,6 +15,7 @@ public class UserController {
   @Autowired
   private UserService userService;
 
+  // Endpoint to register a new user, mapped to POST /api/users/register
   @PostMapping("/register")
   public ResponseEntity<?> registerUser(@Valid @RequestBody User user) {
     try {
@@ -25,6 +26,7 @@ public class UserController {
     }
   }
 
+  // Endpoint to get a user by username, mapped to GET /api/users/{username}
   @GetMapping("/{username}")
   public User getUser(@PathVariable String username) {
     return userService.findByUsername(username);

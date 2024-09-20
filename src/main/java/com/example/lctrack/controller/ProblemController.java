@@ -12,11 +12,13 @@ public class ProblemController {
   @Autowired
   private ProblemService problemService;
 
+  // Endpoint to get all problems, mapped to GET /api/problems/
   @GetMapping("/")
   public List<Problem> getAllProblems() {
     return problemService.getAllProblems();
   }
 
+  // Endpoint to get a problem by ID, mapped to GET /api/problems/{id}
   @GetMapping("/{id}")
   public Problem getProblemById(@PathVariable String id) {
     return problemService.getProblemById(id);
