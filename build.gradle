@@ -2,6 +2,7 @@ plugins {
   id 'java'
   id 'org.springframework.boot' version '3.2.3'
   id 'io.spring.dependency-management' version '1.1.4'
+  id 'com.github.node-gradle.node' version '7.0.2'
 }
 
 group = 'com.example'
@@ -27,6 +28,25 @@ dependencies {
   testImplementation 'io.projectreactor:reactor-test'
 }
 
+
+node {
+  version = '20.17.0'
+  download = true
+  nodeProjectDir = file("${project.projectDir}/frontend")
+  yarnVersion = '1.22.22'
+}
+
+task buildReact(type: YarnTask) {
+  args = ['build']
+  dependsOn yarn_install
+}
+
+processResources.dependsOn buildReact
+
 tasks.named('test') {
   useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked"
 }
