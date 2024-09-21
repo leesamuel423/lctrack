@@ -27,6 +27,7 @@ public class UserController {
   }
 
   // Endpoint to get a user by username, mapped to GET /api/users/{username}
+  // TODO: Add authentication to get to this username
   @GetMapping("/{username}")
   public User getUser(@PathVariable String username) {
     return userService.findByUsername(username);

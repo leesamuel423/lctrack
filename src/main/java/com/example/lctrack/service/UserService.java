@@ -33,7 +33,8 @@ public class UserService {
     if (userRepository.findByUsername(user.getUsername()) != null) {
       throw new UserAlreadyExistsException("Username already exists");
     }
-    // Check if emailc already exists
+
+    // Check if email already exists
     if (userRepository.findByEmail(user.getEmail()) != null) {
       throw new UserAlreadyExistsException("Email already registered");
     }
