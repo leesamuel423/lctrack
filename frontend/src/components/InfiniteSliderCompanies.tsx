@@ -1,6 +1,6 @@
 import { InfiniteSlider } from '@/components/core/infinite-slider';
 
-export function InfiniteSliderBasic() {
+export function InfiniteSliderCompanies() {
   return (
     <>
       <InfiniteSlider gap={30} className="m-4">

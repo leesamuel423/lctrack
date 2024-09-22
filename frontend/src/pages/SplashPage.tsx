@@ -1,4 +1,4 @@
-import { InfiniteSliderBasic } from "@/components/InfiniteSliderBasic";
+import { InfiniteSliderCompanies } from "@/components/InfiniteSliderCompanies";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -19,7 +19,7 @@ function SplashPage() {
       
       
       
-      <InfiniteSliderBasic />
+      <InfiniteSliderCompanies />
     </>
   )
 }
