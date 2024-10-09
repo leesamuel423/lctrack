@@ -48,7 +48,7 @@ public class LeetCodeService {
   // Helper method to get highest problem ID from db
   private int getHighestProblemId() {
     Problem highestProblem = problemRepository.findFirstByOrderByIdDesc();
-    return highestProblem != null ? highestProblem.getId() : 0;
+    return highestProblem != null ? Integer.parseInt(highestProblem.getId()) : 0;
   }
 
   // Method to fetch problems from LeetCode graphql API
@@ -115,7 +115,7 @@ public class LeetCodeService {
 
     // Iterate through questions and save new ones 
     for (Map<String, Object> questionData : questions) {
-      int id = Integer.parseInt((String) questionData.get("frontendQuestionId"));
+      String id = (String) questionData.get("frontendQuestionId");
       if (!problemRepository.existsById(id)) {
         // Create and save a new Problem entity
         Problem problem = new Problem();

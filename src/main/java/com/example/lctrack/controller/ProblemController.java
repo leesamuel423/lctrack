@@ -28,8 +28,7 @@ public class ProblemController {
   // Endpoint for SM2 updates
   @PostMapping("/{id}/review")
   public ResponseEntity<Problem> reviewProblem(@PathVariable String id, @RequestParam int quality) {
-    int idInteger = Integer.parseInt(id);
-    Problem updatedProblem = problemService.updateProblemWithSM2(idInteger, quality);
+    Problem updatedProblem = problemService.updateProblemWithSM2(id, quality);
     return ResponseEntity.ok(updatedProblem);
   }
 

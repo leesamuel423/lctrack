@@ -24,10 +24,10 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
   implementation 'org.springframework.security:spring-security-crypto'
   implementation 'io.projectreactor:reactor-core'
+
   testImplementation 'org.springframework.boot:spring-boot-starter-test'
   testImplementation 'io.projectreactor:reactor-test'
 }
-
 
 node {
   version = '20.17.0'
@@ -43,10 +43,10 @@ task buildReact(type: YarnTask) {
 
 processResources.dependsOn buildReact
 
-tasks.named('test') {
-  useJUnitPlatform()
+tasks.withType(JavaCompile) {
+  options.compilerArgs << "-Xlint:unchecked"
 }
 
-tasks.withType(JavaCompile) {
-    options.compilerArgs << "-Xlint:unchecked"
+test {
+  useJUnitPlatform()
 }

@@ -6,9 +6,8 @@ import org.springframework.data.mongodb.repository.Query;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface ProblemRepository extends MongoRepository<Problem, Integer> {
+public interface ProblemRepository extends MongoRepository<Problem, String> {
   Problem findFirstByOrderByIdDesc();
-  Problem findById();
 
   @Query("{'nextReviewDate': {$lte: ?0}}")
   List<Problem> findProblemsDueForReview(LocalDate date);
