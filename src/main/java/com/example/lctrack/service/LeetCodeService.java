@@ -48,7 +48,7 @@ public class LeetCodeService {
   // Helper method to get highest problem ID from db
   private int getHighestProblemId() {
     Problem highestProblem = problemRepository.findFirstByOrderByIdDesc();
-    return highestProblem != null ? highestProblem.getId() : 0;
+    return highestProblem != null ? Integer.parseInt(highestProblem.getId()) : 0;
   }
 
   // Method to fetch problems from LeetCode graphql API
@@ -84,14 +84,38 @@ public class LeetCodeService {
 
   // Method to save new problems to db
   private Mono<Void> saveNewProblems(Map<String, Object> response) {
-    // Extract data from response
-    Map<String, Object> data = (Map<String, Object>) response.get("data");
-    Map<String, Object> problemsetQuestionList = (Map<String, Object>) data.get("problemsetQuestionList");
-    List<Map<String, Object>> questions = (List<Map<String, Object>>) problemsetQuestionList.get("questions");
+    if (response == null || !response.containsKey("data")) {
+      return Mono.error(new RuntimeException("Invalid response format"));
+    }
+
+    Object dataObj = response.get("data");
+
+    if (!(dataObj instanceof Map)) {
+      return Mono.error(new RuntimeException("Invalid data format"));
+    }
+
+    @SuppressWarnings("unchecked")
+    Map<String, Object> data = (Map<String, Object>) dataObj;
+
+    Object problemsetQuestionListObj = data.get("problemsetQuestionList");
+    if (!(problemsetQuestionListObj instanceof Map)) {
+      return Mono.error(new RuntimeException("Invalid problemsetQuestionList format"));
+    }
+
+    @SuppressWarnings("unchecked")
+    Map<String, Object> problemsetQuestionList = (Map<String, Object>) problemsetQuestionListObj;
+
+    Object questionsObj = problemsetQuestionList.get("questions");
+    if (!(questionsObj instanceof List)) {
+      return Mono.error(new RuntimeException("Invalid questions format"));
+    }
+
+    @SuppressWarnings("unchecked")
+    List<Map<String, Object>> questions = (List<Map<String, Object>>) questionsObj;
 
     // Iterate through questions and save new ones 
     for (Map<String, Object> questionData : questions) {
-      int id = Integer.parseInt((String) questionData.get("frontendQuestionId"));
+      String id = (String) questionData.get("frontendQuestionId");
       if (!problemRepository.existsById(id)) {
         // Create and save a new Problem entity
         Problem problem = new Problem();
