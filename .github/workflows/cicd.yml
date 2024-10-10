@@ -47,6 +47,6 @@ jobs:
       - name: Build React app
         run: |
           cd frontend
-          npm install
-          npm run build
+          yarn install
+          yarn run build
 
